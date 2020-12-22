@@ -110,4 +110,4 @@ venv.bak/
 /saved_ckpt/
 /checkpoints/
 /runs/
-/pretrain/
+*.bat

@@ -1,5 +1,6 @@
 import os
 import random
+import torch
 import dataloader.transforms as transforms
 
 from PIL import Image
@@ -29,7 +30,7 @@ class BaseDataset(Dataset):
 
         if sample_size != -1:
             random.shuffle(self.img_names)
-            self.files = self.img_names[:sample_size]
+            self.img_names = self.img_names[:sample_size]
 
     def __getitem__(self, index):
         img_name = self.img_names[index]
@@ -49,10 +50,22 @@ class BaseDataset(Dataset):
                 trimap = Image.open(trimap_path).convert('L')
 
             sample['img'], sample['trimap'], sample['matte'] = self.trans([img, trimap, matte])
+
+            # get 3-channels trimap.
+            trimap_3 = sample['trimap'].repeat(3, 1, 1)
+            trimap_3[0, :, :] = (trimap_3[0, :, :] < 0.1).float()
+            trimap_3[1, :, :] = torch.logical_and(trimap_3[1, :, :] < 0.6, trimap_3[1, :, :] > 0.4).float()
+            trimap_3[2, :, :] = (trimap_3[2, :, :] > 0.9).float()
+
+            sample['trimap_3'] = trimap_3
+
             return sample
 
         sample['img'] = self.trans([img])
         return sample
+
+    def __len__(self):
+        return len(self.img_names)
 
 
 class TrainDataset(BaseDataset):
@@ -101,13 +114,12 @@ class ValDataset(BaseDataset):
             trimap_dir=args.val_trimap,
             matte_dir=args.val_matte,
             trans=self.__create_transforms(),
-            random_trimap=args.random_trimap,
-            sample_size=args.sample
+            random_trimap=args.random_trimap
         )
 
     def __create_transforms(self):
         return transforms.Compose([
-            transforms.Resize((self.patch_size, self.patch_size)),
+            # transforms.Resize((self.patch_size, self.patch_size)),
             transforms.ToTensor()
         ])
 
@@ -121,13 +133,11 @@ class TestDataset(BaseDataset):
             trimap_dir=args.trimap,
             matte_dir=args.matte,
             trans=self.__create_transforms(),
-            random_trimap=args.random_trimap,
-            sample_size=args.sample
+            random_trimap=args.random_trimap
         )
 
     def __create_transforms(self):
         return transforms.Compose([
             transforms.ResizeIfBiggerThan(self.patch_size),
-            transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+            transforms.ToTensor()
         ])

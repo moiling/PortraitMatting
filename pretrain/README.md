@@ -1,0 +1,1 @@
+The [pretrain](https://drive.google.com/drive/folders/1Hrz1wOxOZm4nIIS7UMJeL79AQrdvpj6v) is from [PSPNet](https://github.com/hszhao/semseg).
