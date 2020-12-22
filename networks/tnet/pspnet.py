@@ -119,14 +119,14 @@ class PSPNet(nn.Module):
             x = F.interpolate(x, size=(h, w), mode="bilinear", align_corners=True)
 
         # aux is not need in t-net.
-        if self.training and y:
-            aux = self.aux(x_tmp)
-            if self.zoom_factor != 1:
-                aux = F.interpolate(
-                    aux, size=(h, w), mode="bilinear", align_corners=True
-                )
-            main_loss = self.criterion(x, y)
-            aux_loss = self.criterion(aux, y)
-            return x.max(1)[1], main_loss, aux_loss
+        # if self.training and y:
+        #     aux = self.aux(x_tmp)
+        #     if self.zoom_factor != 1:
+        #         aux = F.interpolate(
+        #             aux, size=(h, w), mode="bilinear", align_corners=True
+        #         )
+        #     main_loss = self.criterion(x, y)
+        #     aux_loss = self.criterion(aux, y)
+        #     return x.max(1)[1], main_loss, aux_loss
 
         return x

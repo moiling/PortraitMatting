@@ -53,9 +53,9 @@ class BaseDataset(Dataset):
 
             # get 3-channels trimap.
             trimap_3 = sample['trimap'].repeat(3, 1, 1)
-            trimap_3[0, :, :] = (trimap_3[0, :, :] < 0.1).float()
-            trimap_3[1, :, :] = torch.logical_and(trimap_3[1, :, :] < 0.6, trimap_3[1, :, :] > 0.4).float()
-            trimap_3[2, :, :] = (trimap_3[2, :, :] > 0.9).float()
+            trimap_3[0, :, :] = (trimap_3[0, :, :] <= 0.1).float()
+            trimap_3[1, :, :] = torch.logical_and(trimap_3[1, :, :] < 0.9, trimap_3[1, :, :] > 0.1).float()
+            trimap_3[2, :, :] = (trimap_3[2, :, :] >= 0.9).float()
 
             sample['trimap_3'] = trimap_3
 
