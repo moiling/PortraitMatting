@@ -84,14 +84,14 @@ class TrainDataset(BaseDataset):
     def __create_transforms(self):
         if self.mode == 'end2end':
             return transforms.Compose([
-                transforms.RandomCrop(400),
+                transforms.RandomCrop([480, 640]),
                 transforms.Resize((self.patch_size, self.patch_size)),
                 transforms.ToTensor()
             ])
 
         if self.mode == 't-net':
             return transforms.Compose([
-                transforms.RandomCrop(400),
+                transforms.RandomCrop([240, 360, 480, 640]),
                 transforms.Resize((self.patch_size, self.patch_size)),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor()
@@ -99,7 +99,7 @@ class TrainDataset(BaseDataset):
 
         if self.mode == 'm-net':
             return transforms.Compose([
-                transforms.RandomCrop(320),
+                transforms.RandomCrop([240, 360, 480, 640]),
                 transforms.Resize((self.patch_size, self.patch_size)),
                 transforms.ToTensor()
             ])

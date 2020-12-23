@@ -117,13 +117,14 @@ class RandomRotation(object):
 
 
 class RandomCrop(object):
-    def __init__(self, size):
-        self.size = size
+    def __init__(self, sizes):
+        self.sizes = sizes
 
     def __call__(self, images):
         # image, trimap, matte should use the same params.
-        image = resize_if_smaller(images[0], self.size)
-        crop_params = T.RandomCrop.get_params(image, (self.size, self.size))
+        size = np.random.choice(self.sizes)
+        image = resize_if_smaller(images[0], size)
+        crop_params = T.RandomCrop.get_params(image, (size, size))
         for idx, image in enumerate(images):
             images[idx] = F.crop(image, *crop_params)
 
