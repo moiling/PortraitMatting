@@ -1,6 +1,7 @@
-from PIL import Image
 import torch
 import numpy as np
+
+from PIL import Image
 from torchvision.transforms import functional as F
 from comp.estimate_fb import estimate_foreground_background
 from dataloader import transforms

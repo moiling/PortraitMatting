@@ -34,7 +34,7 @@ def resume_model(model, optimizer, checkpoint_dir, mode, logger=logging.getLogge
 
     model.load_state_dict(checkpoint['model_state_dict'])
 
-    if checkpoint['optimizer_state_dict']:
+    if checkpoint['optimizer_state_dict'] and optimizer:
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 
     start_epoch = checkpoint['epoch'] + 1

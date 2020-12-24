@@ -132,8 +132,7 @@ class TestDataset(BaseDataset):
             img_dir=args.img,
             trimap_dir=args.trimap,
             matte_dir=args.matte,
-            trans=self.__create_transforms(),
-            random_trimap=args.random_trimap
+            trans=self.__create_transforms()
         )
 
     def __create_transforms(self):

@@ -8,7 +8,6 @@ import argparse
 import numpy as np
 import torch.backends.cudnn as cudnn
 
-from tqdm import tqdm
 from torch.utils.data import DataLoader
 
 from loss import matting_loss
