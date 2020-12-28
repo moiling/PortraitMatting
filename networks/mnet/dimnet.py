@@ -8,7 +8,7 @@ class Conv2DBatchNormRelu(nn.Module):
     def __init__(self, in_channels, n_filters, k_size, stride,
                  padding, bias=True, dilation=1, with_bn=True, with_relu=True):
 
-        super(Conv2DBatchNormRelu, self).__init__()
+        super().__init__()
 
         conv_mod = nn.Conv2d(int(in_channels), int(n_filters), kernel_size=k_size,
                              padding=padding, stride=stride, bias=bias, dilation=dilation)
@@ -38,7 +38,7 @@ class Conv2DBatchNormRelu(nn.Module):
 
 class SegNetDown2(nn.Module):
     def __init__(self, in_size, out_size):
-        super(SegNetDown2, self).__init__()
+        super().__init__()
         self.conv1 = Conv2DBatchNormRelu(in_size, out_size, k_size=3, stride=1, padding=1)
         self.conv2 = Conv2DBatchNormRelu(out_size, out_size, k_size=3, stride=1, padding=1)
         self.maxpool_with_argmax = nn.MaxPool2d(2, 2, return_indices=True)
@@ -53,7 +53,7 @@ class SegNetDown2(nn.Module):
 
 class SegNetDown3(nn.Module):
     def __init__(self, in_size, out_size):
-        super(SegNetDown3, self).__init__()
+        super().__init__()
         self.conv1 = Conv2DBatchNormRelu(in_size, out_size, k_size=3, stride=1, padding=1)
         self.conv2 = Conv2DBatchNormRelu(out_size, out_size, k_size=3, stride=1, padding=1)
         self.conv3 = Conv2DBatchNormRelu(out_size, out_size, k_size=3, stride=1, padding=1)
@@ -72,7 +72,7 @@ class SegNetDown3(nn.Module):
 
 class SegNetUp1(nn.Module):
     def __init__(self, in_size, out_size):
-        super(SegNetUp1, self).__init__()
+        super().__init__()
         self.unpool = nn.MaxUnpool2d(2, 2)
         self.conv = Conv2DBatchNormRelu(in_size, out_size, k_size=5, stride=1, padding=2, with_relu=False)
 
@@ -86,7 +86,7 @@ class SegNetUp1(nn.Module):
 
 class DIMNet(nn.Module):
     def __init__(self, n_classes=1, in_channels=6, is_unpooling=True, pretrain=True):
-        super(DIMNet, self).__init__()
+        super().__init__()
 
         self.in_channels = in_channels
         self.is_unpooling = is_unpooling

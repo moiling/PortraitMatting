@@ -17,7 +17,7 @@ class BaseDataset(Dataset):
             sample_size=-1,
             random_trimap=False
     ):
-        super(BaseDataset, self).__init__()
+        super().__init__()
         self.img_dir = img_dir
         self.trimap_dir = trimap_dir
         self.matte_dir = matte_dir
@@ -72,7 +72,7 @@ class TrainDataset(BaseDataset):
     def __init__(self, args):
         self.mode = args.mode
         self.patch_size = args.patch_size
-        super(TrainDataset, self).__init__(
+        super().__init__(
             img_dir=args.img,
             trimap_dir=args.trimap,
             matte_dir=args.matte,
@@ -109,7 +109,7 @@ class ValDataset(BaseDataset):
     def __init__(self, args):
         self.mode = args.mode
         self.patch_size = args.patch_size
-        super(ValDataset, self).__init__(
+        super().__init__(
             img_dir=args.val_img,
             trimap_dir=args.val_trimap,
             matte_dir=args.val_matte,
@@ -128,7 +128,7 @@ class TestDataset(BaseDataset):
     def __init__(self, args):
         self.mode = args.mode
         self.patch_size = args.patch_size
-        super(TestDataset, self).__init__(
+        super().__init__(
             img_dir=args.img,
             trimap_dir=args.trimap,
             matte_dir=args.matte,

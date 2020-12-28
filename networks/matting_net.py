@@ -7,7 +7,7 @@ from networks.tnet.pspnet import PSPNet
 
 class MattingNet(nn.Module):
     def __init__(self):
-        super(MattingNet, self).__init__()
+        super().__init__()
         self.tnet = PSPNet()
         self.mnet = DIMNet()
 

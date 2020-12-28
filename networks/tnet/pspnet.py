@@ -9,7 +9,7 @@ from .resnet import resnet50, resnet101, resnet152
 
 class PPM(nn.Module):
     def __init__(self, in_dim, reduction_dim, bins):
-        super(PPM, self).__init__()
+        super().__init__()
         self.features = []
         for bin in bins:
             self.features.append(
@@ -34,7 +34,7 @@ class PSPNet(nn.Module):
     def __init__(self, layers=50, bins=(1, 2, 3, 6), dropout=0.1, classes=3, zoom_factor=8,
                  use_ppm=True, criterion=nn.CrossEntropyLoss(ignore_index=255), pretrained=True):
 
-        super(PSPNet, self).__init__()
+        super().__init__()
         assert layers in [50, 101, 152]
         assert 2048 % len(bins) == 0
         assert classes > 1
