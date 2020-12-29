@@ -1,0 +1,6 @@
+tensorboardX
+numpy
+opencv-python
+torch
+pillow~=8.0.1
+torchvision~=0.8.1
