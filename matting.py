@@ -50,10 +50,10 @@ class Matting:
 
             # resize to training size.
             if net_img_size > 0:
-                resize_image = F.resize(image, [net_img_size, net_img_size])
+                resize_image = F.resize(image, [net_img_size, net_img_size], Image.BILINEAR)
                 pred_matte, pred_trimap_prob = self.model(resize_image)
                 pred_matte = F.resize(pred_matte, [h, w])
-                pred_trimap_prob = F.resize(pred_trimap_prob, [h, w])
+                pred_trimap_prob = F.resize(pred_trimap_prob, [h, w], Image.BILINEAR)
             else:
                 pred_matte, pred_trimap_prob = self.model(image)
 
