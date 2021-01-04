@@ -32,7 +32,7 @@ def resume_model(model, optimizer, checkpoint_dir, mode, logger=logging.getLogge
     if checkpoint is None:
         return 0, [1e5]
 
-    model.load_state_dict(checkpoint['model_state_dict'])
+    model.load_state_dict(checkpoint['model_state_dict'], strict=False)
 
     if checkpoint['optimizer_state_dict'] and optimizer:
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
@@ -82,12 +82,14 @@ def load_checkpoint(checkpoint_dir, mode, logger=logging.getLogger('utils')):
     return None
 
 
-def save_images(out_dir, names, pred_mattes, pred_trimaps_prob, logger=logging.getLogger('utils')):
+def save_images(out_dir, names, pred_mattes, pred_trimaps_prob, pred_mattes_u, logger=logging.getLogger('utils')):
     """Save a batch of images."""
     matte_path = os.path.join(out_dir, 'matte')
+    matte_u_path = os.path.join(out_dir, 'matte_u')
     trimap_path = os.path.join(out_dir, 'trimap')
 
     os.makedirs(matte_path, exist_ok=True)
+    os.makedirs(matte_u_path, exist_ok=True)
     os.makedirs(trimap_path, exist_ok=True)
 
     # logger.debug(f'Saving {len(names)} images to {out_dir}')
@@ -96,6 +98,10 @@ def save_images(out_dir, names, pred_mattes, pred_trimaps_prob, logger=logging.g
         matte = pred_mattes[idx]
         save_path = os.path.join(matte_path, name)
         torchvision.utils.save_image(matte, save_path)
+
+        matte_u = pred_mattes_u[idx]
+        save_path = os.path.join(matte_u_path, name)
+        torchvision.utils.save_image(matte_u, save_path)
 
         trimap = pred_trimaps_prob[idx]
         trimap = trimap.softmax(dim=0)

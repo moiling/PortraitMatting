@@ -39,7 +39,7 @@ parser.add_argument('-d', '--debug',         action='store_true', help='log for 
 parser.add_argument('-g', '--gpu',           action='store_true', help='use gpu.')
 parser.add_argument('-r', '--resume',        action='store_true', default=True, help='load a previous checkpoint if exists.')
 
-parser.add_argument('-m', '--mode', type=str, choices=['end2end', 'm-net', 't-net'], default='end2end', help='working mode.')
+parser.add_argument('-m', '--mode', type=str, choices=['end2end', 'f-net', 'm-net', 't-net'], default='end2end', help='working mode.')
 
 args = parser.parse_args()
 
@@ -114,10 +114,10 @@ for epoch in range(start_epoch, args.epoch + 1):
             trimap_3 = None
 
         """ Forward """
-        pm, ptp = model(img, trimap_3)
+        pm, ptp, pmu = model(img, trimap_3)
 
         """ Calculate Loss """
-        loss = matting_loss(img, ptp, pm, gt_trimap_3, gt_matte, args.mode)
+        loss = matting_loss(img, ptp, pm, pmu, gt_trimap_3, gt_matte, args.mode)
         """ Back Propagate """
         optimizer.zero_grad()
         loss.backward()
@@ -157,16 +157,16 @@ for epoch in range(start_epoch, args.epoch + 1):
                 trimap_3 = None
 
             """ Forward """
-            pm, ptp = model(img, trimap_3)
+            pm, ptp, pmu = model(img, trimap_3)
 
             """ Calculate Loss """
-            loss = matting_loss(img, ptp, pm, gt_trimap_3, gt_matte, args.mode)
+            loss = matting_loss(img, ptp, pm, pmu, gt_trimap_3, gt_matte, args.mode)
 
             val_loss += loss.item()
 
             """ Write Log and Save Images """
             logger.debug(f'Batch: {idx + 1}/{len(val_data_loader)} \t' f'Validation Loss: {loss.item():8.5f}')
-            utils.save_images(args.val_out, batch['name'], pm, ptp, logger)
+            utils.save_images(args.val_out, batch['name'], pm, ptp, pmu, logger)
 
     average_loss = val_loss / len(val_data_loader)
     losses.append(average_loss)

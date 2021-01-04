@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# img=/workspace/Dataset/AiSegment/matting_human_half/pre-12/img
+# tmp=/workspace/Dataset/AiSegment/matting_human_half/pre/trimap
+# mat=/workspace/Dataset/AiSegment/matting_human_half/pre-12/FBA/alpha
 img=/workspace/Dataset/AiSegment/matting_human_half/pre-12/img
 tmp=/workspace/Dataset/AiSegment/matting_human_half/pre/trimap
 mat=/workspace/Dataset/AiSegment/matting_human_half/pre-12/FBA/alpha
@@ -9,6 +12,10 @@ val_mat=/workspace/Mission/removebg_alpha
 ckpt=checkpoints
 patch_size=480
 sample=1000
+t_epoch=20
+m_epoch=20
+f_epoch=20
+e_epoch=200
 
 : "
 python train.py \
@@ -23,10 +30,9 @@ python train.py \
       --val-matte=${val_mat} \
       --ckpt=${ckpt} \
       --patch-size=${patch_size} \
-      --sample=${sample}
+      --sample=${sample} \
+      --epoch=${t_epoch}
 
-"
-: "
 python train.py \
       -dgr \
       -m=m-net \
@@ -39,8 +45,23 @@ python train.py \
       --val-matte=${val_mat} \
       --ckpt=${ckpt} \
       --patch-size=${patch_size} \
-      --sample=${sample}
+      --sample=${sample} \
+      --epoch=${m_epoch}
 
+python train.py \
+      -dgr \
+      -m=f-net \
+      --img=${img} \
+      --trimap=${tmp} \
+      --matte=${mat} \
+      --val-out=${val_out} \
+      --val-img=${val_img} \
+      --val-trimap=${val_tmp} \
+      --val-matte=${val_mat} \
+      --ckpt=${ckpt} \
+      --patch-size=${patch_size} \
+      --sample=${sample} \
+      --epoch=${f_epoch}
 "
 python train.py \
       -dgr \
@@ -54,4 +75,5 @@ python train.py \
       --val-matte=${val_mat} \
       --ckpt=${ckpt} \
       --patch-size=${patch_size} \
-      --sample=${sample}
+      --sample=${sample} \
+      --epoch=${e_epoch}

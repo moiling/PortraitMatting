@@ -1,1 +1,2 @@
-The [pretrain](https://drive.google.com/drive/folders/1Hrz1wOxOZm4nIIS7UMJeL79AQrdvpj6v) is from [PSPNet](https://github.com/hszhao/semseg).
+The [PSPNet pretrain](https://drive.google.com/drive/folders/1Hrz1wOxOZm4nIIS7UMJeL79AQrdvpj6v) is from [PSPNet](https://github.com/hszhao/semseg). <br />
+The [MobileNetV2 pretrain](https://drive.google.com/drive/folders/1umYmlCulvIFNaqPjwod1SayFmSRHziyR) is from [MODNet](https://github.com/ZHKKKe/MODNet).
