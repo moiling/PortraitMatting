@@ -55,7 +55,7 @@ class Matting:
                 pred_matte = F.resize(pred_matte, [h, w])
                 pred_trimap_prob = F.resize(pred_trimap_prob, [h, w], Image.BILINEAR)
             else:
-                pred_matte, pred_trimap_prob = self.model(image)
+                pred_matte, pred_trimap_prob, _ = self.model(image)
 
             pred_matte = pred_matte.cpu().detach().squeeze(dim=0).numpy().transpose(1, 2, 0)
             image = image.cpu().detach().squeeze(dim=0).numpy().transpose(1, 2, 0)

@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# img=/workspace/Dataset/AiSegment/matting_human_half/pre-12/img
-# tmp=/workspace/Dataset/AiSegment/matting_human_half/pre/trimap
-# mat=/workspace/Dataset/AiSegment/matting_human_half/pre-12/FBA/alpha
 img=/workspace/Dataset/AiSegment/matting_human_half/pre-12/img
 tmp=/workspace/Dataset/AiSegment/matting_human_half/pre/trimap
 mat=/workspace/Dataset/AiSegment/matting_human_half/pre-12/FBA/alpha
