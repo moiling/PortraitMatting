@@ -15,7 +15,9 @@ class BaseDataset(Dataset):
             matte_dir=None,
             trans=transforms.Compose([transforms.ToTensor()]),
             sample_size=-1,
-            random_trimap=False
+            random_trimap=False,
+            fg_dir=None,
+            bg_dir=None
     ):
         super().__init__()
         self.img_dir = img_dir
@@ -23,6 +25,8 @@ class BaseDataset(Dataset):
         self.matte_dir = matte_dir
         self.trans = trans
         self.random_trimap = random_trimap
+        self.fg_dir = fg_dir
+        self.bg_dir = bg_dir
         self.img_names = []
 
         for name in os.listdir(self.img_dir):
@@ -35,33 +39,44 @@ class BaseDataset(Dataset):
     def __getitem__(self, index):
         img_name = self.img_names[index]
         img_path = os.path.join(self.img_dir, img_name)
-        img = Image.open(img_path)
+        img = Image.open(img_path).convert('RGB')
 
         sample = {'name': img_name}
 
-        if (self.trimap_dir is not None or self.random_trimap) and self.matte_dir is not None:
-            matte_path = os.path.join(self.matte_dir, img_name).replace('.jpg', '.png')
-            matte = Image.open(matte_path).convert('L')
-
-            if self.random_trimap:
-                trimap = transforms.GenTrimap()(matte)
-            else:
-                trimap_path = os.path.join(self.trimap_dir, img_name).replace('.jpg', '.png')
-                trimap = Image.open(trimap_path).convert('L')
-
-            sample['img'], sample['trimap'], sample['matte'] = self.trans([img, trimap, matte])
-
-            # get 3-channels trimap.
-            trimap_3 = sample['trimap'].repeat(3, 1, 1)
-            trimap_3[0, :, :] = (trimap_3[0, :, :] <= 0.1).float()
-            trimap_3[1, :, :] = ((trimap_3[1, :, :] < 0.9) & (trimap_3[1, :, :] > 0.1)).float()
-            trimap_3[2, :, :] = (trimap_3[2, :, :] >= 0.9).float()
-
-            sample['trimap_3'] = trimap_3
-
+        # only image, maybe for inference.
+        if not (self.trimap_dir or self.random_trimap) or not self.matte_dir:
+            sample['img'] = self.trans([img])
             return sample
 
-        sample['img'] = self.trans([img])
+        matte_path = os.path.join(self.matte_dir, img_name).replace('.jpg', '.png')
+        matte = Image.open(matte_path).convert('L')
+
+        if self.random_trimap:
+            trimap = transforms.GenTrimap()(matte)
+        else:
+            trimap_path = os.path.join(self.trimap_dir, img_name).replace('.jpg', '.png')
+            trimap = Image.open(trimap_path).convert('L')
+
+        # only train data have fg & bg.
+        if self.fg_dir and self.bg_dir:
+            fg_path = os.path.join(self.fg_dir, img_name).replace('.jpg', '.png')
+            bg_path = os.path.join(self.bg_dir, img_name).replace('.jpg', '.png')
+            fg = Image.open(fg_path).convert('RGB')
+            bg = Image.open(bg_path).convert('RGB')
+
+            sample['img'], sample['trimap'], sample['matte'], sample['fg'], sample['bg'] = self.trans(
+                [img, trimap, matte, fg, bg])
+        else:
+            sample['img'], sample['trimap'], sample['matte'] = self.trans([img, trimap, matte])
+
+        # get 3-channels trimap.
+        trimap_3 = sample['trimap'].repeat(3, 1, 1)
+        trimap_3[0, :, :] = (trimap_3[0, :, :] <= 0.1).float()
+        trimap_3[1, :, :] = ((trimap_3[1, :, :] < 0.9) & (trimap_3[1, :, :] > 0.1)).float()
+        trimap_3[2, :, :] = (trimap_3[2, :, :] >= 0.9).float()
+
+        sample['trimap_3'] = trimap_3
+
         return sample
 
     def __len__(self):
@@ -78,7 +93,9 @@ class TrainDataset(BaseDataset):
             matte_dir=args.matte,
             trans=self.__create_transforms(),
             random_trimap=args.random_trimap,
-            sample_size=args.sample
+            sample_size=args.sample,
+            fg_dir=args.fg,
+            bg_dir=args.bg
         )
 
     def __create_transforms(self):

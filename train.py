@@ -21,6 +21,8 @@ parser = argparse.ArgumentParser('Portrait Matting Training Arguments.')
 parser.add_argument('--img',        type=str,   default='',   help='training images.')
 parser.add_argument('--trimap',     type=str,   default='',   help='intermediate trimaps.')
 parser.add_argument('--matte',      type=str,   default='',   help='final mattes.')
+parser.add_argument('--fg',         type=str,   default='',   help='fg for loss.')
+parser.add_argument('--bg',         type=str,   default='',   help='bg for loss.')
 parser.add_argument('--val-out',    type=str,   default='',   help='val image out.')
 parser.add_argument('--val-img',    type=str,   default='',   help='val images.')
 parser.add_argument('--val-trimap', type=str,   default='',   help='intermediate val trimaps.')
@@ -98,17 +100,23 @@ for epoch in range(start_epoch, args.epoch + 1):
         trimap_3    = batch['trimap_3']
         gt_trimap_3 = batch['trimap_3']
         gt_matte    = batch['matte']
+        gt_fg       = batch['fg']
+        gt_bg       = batch['bg']
 
         if args.gpu and torch.cuda.is_available():
             img         = img.cuda()
             trimap_3    = trimap_3.cuda()
             gt_trimap_3 = gt_trimap_3.cuda()
             gt_matte    = gt_matte.cuda()
+            gt_fg       = gt_fg.cuda()
+            gt_bg       = gt_bg.cuda()
         else:
             img         = img.cpu()
             trimap_3    = trimap_3.cpu()
             gt_trimap_3 = gt_trimap_3.cpu()
             gt_matte    = gt_matte.cpu()
+            gt_fg       = gt_fg.cpu()
+            gt_bg       = gt_bg.cpu()
 
         if args.mode != 'm-net':
             trimap_3 = None
@@ -117,7 +125,7 @@ for epoch in range(start_epoch, args.epoch + 1):
         pm, ptp, pmu = model(img, trimap_3)
 
         """ Calculate Loss """
-        loss = matting_loss(img, ptp, pm, pmu, gt_trimap_3, gt_matte, args.mode)
+        loss = matting_loss(img, ptp, pm, pmu, gt_trimap_3, gt_matte, args.mode, gt_fg, gt_bg)
         """ Back Propagate """
         optimizer.zero_grad()
         loss.backward()

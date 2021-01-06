@@ -14,9 +14,9 @@ set patch_size=200
 set sample=1000
 set epoch=50
 
-python train.py -dgr -m=t-net   --img=%img% --trimap=%tmp% --matte=%mat% --val-out=%val_out% --val-img=%val_img% --val-trimap=%val_tmp% --val-matte=%val_mat% --ckpt=%ckpt% --patch-size=%patch_size% --sample=%sample% --epoch=%epoch%
-python train.py -dgr -m=m-net   --img=%img% --trimap=%tmp% --matte=%mat% --val-out=%val_out% --val-img=%val_img% --val-trimap=%val_tmp% --val-matte=%val_mat% --ckpt=%ckpt% --patch-size=%patch_size% --sample=%sample% --epoch=%epoch%
-python train.py -dgr -m=f-net   --img=%img% --trimap=%tmp% --matte=%mat% --val-out=%val_out% --val-img=%val_img% --val-trimap=%val_tmp% --val-matte=%val_mat% --ckpt=%ckpt% --patch-size=%patch_size% --sample=%sample% --epoch=%epoch%
-python train.py -dgr -m=end2end --img=%img% --trimap=%tmp% --matte=%mat% --val-out=%val_out% --val-img=%val_img% --val-trimap=%val_tmp% --val-matte=%val_mat% --ckpt=%ckpt% --patch-size=%patch_size% --sample=%sample% --epoch=%epoch%
+:: python train.py -dgr -m=t-net   --img=%img% --trimap=%tmp% --matte=%mat% --fg=%fg% --bg=%bg% --val-out=%val_out% --val-img=%val_img% --val-trimap=%val_tmp% --val-matte=%val_mat% --ckpt=%ckpt% --patch-size=%patch_size% --sample=%sample% --epoch=%epoch%
+:: python train.py -dgr -m=m-net   --img=%img% --trimap=%tmp% --matte=%mat% --fg=%fg% --bg=%bg% --val-out=%val_out% --val-img=%val_img% --val-trimap=%val_tmp% --val-matte=%val_mat% --ckpt=%ckpt% --patch-size=%patch_size% --sample=%sample% --epoch=%epoch%
+:: python train.py -dgr -m=f-net   --img=%img% --trimap=%tmp% --matte=%mat% --fg=%fg% --bg=%bg% --val-out=%val_out% --val-img=%val_img% --val-trimap=%val_tmp% --val-matte=%val_mat% --ckpt=%ckpt% --patch-size=%patch_size% --sample=%sample% --epoch=%epoch%
+python train.py -dgr -m=end2end --img=%img% --trimap=%tmp% --matte=%mat% --fg=%fg% --bg=%bg% --val-out=%val_out% --val-img=%val_img% --val-trimap=%val_tmp% --val-matte=%val_mat% --ckpt=%ckpt% --patch-size=%patch_size% --sample=%sample% --epoch=%epoch%
 
 Pause

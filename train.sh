@@ -2,6 +2,8 @@
 img=/workspace/Dataset/AiSegment/matting_human_half/pre-12/img
 tmp=/workspace/Dataset/AiSegment/matting_human_half/pre/trimap
 mat=/workspace/Dataset/AiSegment/matting_human_half/pre-12/FBA/alpha
+fg=/workspace/Dataset/Adobe_Half_Human/comp_bg/fg
+bg=/workspace/Dataset/Adobe_Half_Human/comp_bg/bg
 val_out=data/val
 val_img=/workspace/Mission/photos
 val_tmp=/workspace/Mission/removebg_trimap
@@ -21,6 +23,8 @@ python train.py \
       --img=${img} \
       --trimap=${tmp} \
       --matte=${mat} \
+      --fg=${fg} \
+      --bg=${bg} \
       --val-out=${val_out} \
       --val-img=${val_img} \
       --val-trimap=${val_tmp} \
@@ -36,6 +40,8 @@ python train.py \
       --img=${img} \
       --trimap=${tmp} \
       --matte=${mat} \
+      --fg=${fg} \
+      --bg=${bg} \
       --val-out=${val_out} \
       --val-img=${val_img} \
       --val-trimap=${val_tmp} \
@@ -51,6 +57,8 @@ python train.py \
       --img=${img} \
       --trimap=${tmp} \
       --matte=${mat} \
+      --fg=${fg} \
+      --bg=${bg} \
       --val-out=${val_out} \
       --val-img=${val_img} \
       --val-trimap=${val_tmp} \
@@ -66,6 +74,8 @@ python train.py \
       --img=${img} \
       --trimap=${tmp} \
       --matte=${mat} \
+      --fg=${fg} \
+      --bg=${bg} \
       --val-out=${val_out} \
       --val-img=${val_img} \
       --val-trimap=${val_tmp} \
