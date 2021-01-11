@@ -10,7 +10,7 @@ if __name__ == '__main__':
     out_matte_dir   = 'data/predictions/matte'
     out_trimap_dir  = 'data/predictions/trimap'
     out_cutout_dir  = 'data/predictions/cutout'
-    checkpoint_path = 'checkpoints/refined_white-best-epoch-54-1608361956.pt'
+    checkpoint_path = 'checkpoints/end2end-epoch-400-1610256550.pt'
 
     bg_color = [33, 150, 243]  # BGR
 
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     os.makedirs(out_cutout_dir, exist_ok=True)
 
     start_time = time.time()
-    M = Matting(checkpoint_path=checkpoint_path, gpu=False)
+    M = Matting(checkpoint_path=checkpoint_path, gpu=True)
     end_time = time.time()
     print(f'Load Model Time:{end_time - start_time:.2f}s.')
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
             img_path = os.path.join(root, f)
 
             start_time = time.time()
-            matte, img, trimap = M.matting(img_path, with_img_trimap=True, net_img_size=-1, max_size=378)
+            matte, img, trimap = M.matting(img_path, with_img_trimap=True, net_img_size=480, max_size=378)
             end_time = time.time()
             print(f'Matting Time:{end_time - start_time:.2f}s.')
 

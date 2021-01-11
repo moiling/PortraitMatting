@@ -10,7 +10,7 @@ from networks.tnet.pspnet import PSPNet
 class MattingNet(nn.Module):
     def __init__(self):
         super().__init__()
-        self.tnet = MobileNetWrapper()
+        self.tnet = PSPNet()
         self.mnet = DIMNet()
         self.fnet = FusionNet()
 
