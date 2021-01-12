@@ -41,9 +41,9 @@ def matting_loss(img, pred_trimap_prob, pred_matte, pred_matte_u, gt_trimap_3, g
         return alpha_loss(pred_matte_u, gt_matte, mask)
     if mode == 'f-net':
         if gt_fg is not None and gt_bg is not None:
-            return (0.5 * alpha_loss(pred_matte_u, gt_matte) +
-                    0.5 * comp_loss(img, pred_matte_u, gt_fg, gt_bg))
-        return alpha_loss(pred_matte_u, gt_matte)
+            return (0.5 * alpha_loss(pred_matte, gt_matte) +
+                    0.5 * comp_loss(img, pred_matte, gt_fg, gt_bg))
+        return alpha_loss(pred_matte, gt_matte)
 
     mask = (pred_trimap_prob.softmax(dim=1).argmax(dim=1) == 1).float().unsqueeze(dim=1)
     mask = mask.detach()
