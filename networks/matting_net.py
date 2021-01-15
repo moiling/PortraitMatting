@@ -28,6 +28,6 @@ class MattingNet(nn.Module):
             concat = torch.cat([img, trimap_3], dim=1)                    # [B, C(RGB+BUF=6), H, W]
 
         pred_matte_u = self.mnet(concat)                                  # [B, C(alpha=1),   H, W]
-        pred_matte = self.fnet(torch.cat([concat, pred_matte_u], dim=1))  # [B, C(alpha=1),   H, W])
+        pred_matte = self.fnet(torch.cat([concat, pred_matte_u], dim=1))  # [B, C(alpha=1),   H, W]
 
         return pred_matte, pred_trimap_prob, pred_matte_u
