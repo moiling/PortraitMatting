@@ -23,7 +23,7 @@ class Matting:
             model.cpu()
 
         # load checkpoint.
-        checkpoint = torch.load(self.checkpoint_path)
+        checkpoint = torch.load(self.checkpoint_path, map_location='cpu')
         model.load_state_dict(checkpoint['model_state_dict'])
         model.eval()
         return model
