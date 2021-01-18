@@ -9,7 +9,8 @@ import pynvml
 
 from matting import Matting
 
-gpu = True
+
+gpu = False
 model = Matting(checkpoint_path='../checkpoints/best.pt', gpu=gpu)
 model.model.share_memory()
 # print('load model')

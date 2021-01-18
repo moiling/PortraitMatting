@@ -8,9 +8,9 @@ from networks.ops import SEBlock, Conv2dIBNormRelu
 
 class MobileNetWrapper(nn.Module):
 
-    def __init__(self):
+    def __init__(self, pretrain=True):
         super().__init__()
-        self.model = MobileNetV2(in_channels=3, pretrain=True)
+        self.model = MobileNetV2(in_channels=3, pretrain=pretrain)
         enc_channels = [16, 24, 32, 96, 1280]
 
         self.se_block = SEBlock(enc_channels[4], enc_channels[4], reduction=4)

@@ -32,7 +32,7 @@ class PPM(nn.Module):
 
 class PSPNet(nn.Module):
     def __init__(self, layers=50, bins=(1, 2, 3, 6), dropout=0.1, classes=3, zoom_factor=8,
-                 use_ppm=True, criterion=nn.CrossEntropyLoss(ignore_index=255), pretrained=True):
+                 use_ppm=True, criterion=nn.CrossEntropyLoss(ignore_index=255), pretrain=True):
 
         super().__init__()
         assert layers in [50, 101, 152]
@@ -44,11 +44,11 @@ class PSPNet(nn.Module):
         self.criterion = criterion
 
         if layers == 50:
-            resnet = resnet50(pretrained=pretrained)
+            resnet = resnet50(pretrained=pretrain)
         elif layers == 101:
-            resnet = resnet101(pretrained=pretrained)
+            resnet = resnet101(pretrained=pretrain)
         else:
-            resnet = resnet152(pretrained=pretrained)
+            resnet = resnet152(pretrained=pretrain)
 
         self.layer0 = nn.Sequential(
             resnet.conv1,

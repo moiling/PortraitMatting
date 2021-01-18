@@ -10,7 +10,7 @@ from networks.tnet.pspnet import PSPNet
 class MattingNet(nn.Module):
     def __init__(self, pretrain=True):
         super().__init__()
-        self.tnet = PSPNet(pretrained=pretrain)
+        self.tnet = PSPNet(pretrain=pretrain)
         self.mnet = DIMNet(pretrain=pretrain)
         self.fnet = FusionNet()
 
