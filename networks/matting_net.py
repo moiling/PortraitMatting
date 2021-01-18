@@ -8,10 +8,10 @@ from networks.tnet.pspnet import PSPNet
 
 
 class MattingNet(nn.Module):
-    def __init__(self):
+    def __init__(self, pretrain=True):
         super().__init__()
-        self.tnet = PSPNet()
-        self.mnet = DIMNet()
+        self.tnet = PSPNet(pretrained=pretrain)
+        self.mnet = DIMNet(pretrain=pretrain)
         self.fnet = FusionNet()
 
     def forward(self, img, trimap_3=None):

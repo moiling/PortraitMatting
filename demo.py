@@ -10,7 +10,7 @@ if __name__ == '__main__':
     out_matte_dir   = 'data/predictions/matte'
     out_trimap_dir  = 'data/predictions/trimap'
     out_cutout_dir  = 'data/predictions/cutout'
-    checkpoint_path = 'checkpoints/end2end-epoch-400-1610256550.pt'
+    checkpoint_path = 'checkpoints/best.pt'
 
     bg_color = [33, 150, 243]  # BGR
 

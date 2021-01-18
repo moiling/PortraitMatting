@@ -16,7 +16,7 @@ class Matting:
         self.model = self.__load_model()
 
     def __load_model(self):
-        model = MattingNet()
+        model = MattingNet(pretrain=False)
         if self.gpu and torch.cuda.is_available():
             model.cuda()
         else:
