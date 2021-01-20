@@ -4,7 +4,7 @@ import cv2
 from functools import reduce
 
 if __name__ == '__main__':
-    orig_img_type = 'photos'
+    orig_img_type = 'mobile_photos'
     orig_img_path = os.path.join('D:/Mission', orig_img_type)
     result_img_path = 'C:/Users/moi/Desktop/comp'
     result_img_path_2 = 'C:/Users/moi/Desktop/comp2'

@@ -28,8 +28,9 @@ class Matting:
         model.eval()
         return model
 
-    def matting(self, image_path, with_img_trimap=False, net_img_size=-1, max_size=-1):
+    def matting(self, image_path, with_img_trimap=False, net_img_size=-1, max_size=-1, trimap_path=None):
         """
+        :param   trimap_path:
         :param   image_path:
         :param   with_img_trimap: return origin image and pred_trimap.
         :param   net_img_size   : resize to training size for better result. (resize <= 0 => no resize)
@@ -41,21 +42,29 @@ class Matting:
         """
         with torch.no_grad():
             image = self.__load_image_tensor(image_path, max_size)
+            trimap_3 = self.__load_trimap_tensor(trimap_path, max_size)
             if self.gpu and torch.cuda.is_available():
                 image = image.cuda()
+                if trimap_3 is not None:
+                    trimap_3 = trimap_3.cuda()
             else:
                 image = image.cpu()
+                if trimap_3 is not None:
+                    trimap_3 = trimap_3.cpu()
 
             b, c, h, w = image.shape
 
             # resize to training size.
             if net_img_size > 0:
                 resize_image = F.resize(image, [net_img_size, net_img_size], Image.BILINEAR)
-                pred_matte, pred_trimap_prob, _ = self.model(resize_image)
+                resize_trimap = None
+                if trimap_3 is not None:
+                    resize_trimap = F.resize(trimap_3, [net_img_size, net_img_size], Image.BILINEAR)
+                pred_matte, pred_trimap_prob, _ = self.model(resize_image, resize_trimap)
                 pred_matte = F.resize(pred_matte, [h, w])
                 pred_trimap_prob = F.resize(pred_trimap_prob, [h, w], Image.BILINEAR)
             else:
-                pred_matte, pred_trimap_prob, _ = self.model(image)
+                pred_matte, pred_trimap_prob, _ = self.model(image, trimap_3)
 
             pred_matte = pred_matte.cpu().detach().squeeze(dim=0).numpy().transpose(1, 2, 0)
             image = image.cpu().detach().squeeze(dim=0).numpy().transpose(1, 2, 0)
@@ -101,3 +110,20 @@ class Matting:
         image = image.unsqueeze(dim=0)
         return image
 
+    def __load_trimap_tensor(self, trimap_path, max_size=-1):
+        if trimap_path is None:
+            return None
+        trimap = Image.open(trimap_path).convert('L')
+
+        if max_size > 0:
+            [trimap] = transforms.ResizeIfBiggerThan(max_size)([trimap])
+        [trimap] = transforms.ToTensor()([trimap])
+
+        # get 3-channels trimap.
+        trimap_3 = trimap.repeat(3, 1, 1)
+        trimap_3[0, :, :] = (trimap_3[0, :, :] <= 0.1).float()
+        trimap_3[1, :, :] = ((trimap_3[1, :, :] < 0.9) & (trimap_3[1, :, :] > 0.1)).float()
+        trimap_3[2, :, :] = (trimap_3[2, :, :] >= 0.9).float()
+
+        trimap_3 = trimap_3.unsqueeze(dim=0)
+        return trimap_3
