@@ -27,7 +27,7 @@ def inv2(mat):
 def pixel_coordinates(w, h, flat=False):
     x = torch.arange(w)
     y = torch.arange(h)
-    x, y = torch.meshgrid(x, y)
+    y, x = torch.meshgrid(x, y)
 
     if flat:
         x = torch.flatten(x)
@@ -121,14 +121,14 @@ def estimate_foreground_background(
             a = alpha[:, :, 0].reshape(w * h)
 
             # Build system of linear equations
-            U = torch.stack([a, 1 - a], dim=1)
+            U = torch.stack((a, 1 - a), dim=1)
             A = vec_vec_outer(U, U)
             b = vec_vec_outer(U, image.reshape(w * h, 3))
 
             # For each neighbor
             for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-                x2 = np.clip(x + dx, 0, w - 1)
-                y2 = np.clip(y + dy, 0, h - 1)
+                x2 = torch.clip(x + dx, 0, w - 1)
+                y2 = torch.clip(y + dy, 0, h - 1)
 
                 # Vectorized neighbor coordinates
                 j = x2 + y2 * w
