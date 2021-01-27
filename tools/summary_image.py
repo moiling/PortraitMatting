@@ -4,7 +4,7 @@ import cv2
 from functools import reduce
 
 if __name__ == '__main__':
-    orig_img_type = 'mobile_photos'
+    orig_img_type = 'all_photos'
     orig_img_path = os.path.join('D:/Mission', orig_img_type)
     result_img_path = 'C:/Users/moi/Desktop/comp'
     result_img_path_2 = 'C:/Users/moi/Desktop/comp2'
@@ -12,7 +12,7 @@ if __name__ == '__main__':
     fix_img_height = 378
     avg_img_width = 260
     padding_middle = 24
-    max_img_inline = 10
+    max_img_inline = 22
     summary_bg_color = [255, 255, 255]
 
     summary_img_inlines = []

@@ -12,7 +12,7 @@ if __name__ == '__main__':
     out_trimap_dir  = 'data/predictions/trimap'
     out_cutout_dir  = 'data/predictions/cutout'
     out_image_dir   = 'data/predictions/image'
-    checkpoint_path = 'checkpoints/photoshop4k+3k-480-210112-1610345321.pt'
+    checkpoint_path = 'checkpoints/end2end-epoch-400-1611364021.pt'
 
     bg_color = [33, 150, 243]  # BGR
 

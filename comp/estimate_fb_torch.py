@@ -1,8 +1,9 @@
 import numpy as np
+import torch
 
 
 def vec_vec_outer(a, b):
-    return np.einsum("...i,...j", a, b)
+    return torch.einsum("...i,...j", a, b)
 
 
 def inv2(mat):
@@ -13,7 +14,7 @@ def inv2(mat):
 
     inv_det = 1 / (a * d - b * c)
 
-    inv = np.empty(mat.shape)
+    inv = torch.empty(mat.shape)
 
     inv[..., 0, 0] = inv_det * d
     inv[..., 0, 1] = inv_det * -b
@@ -24,33 +25,30 @@ def inv2(mat):
 
 
 def pixel_coordinates(w, h, flat=False):
-    x = np.arange(w)
-    y = np.arange(h)
-    x, y = np.meshgrid(x, y)
+    x = torch.arange(w)
+    y = torch.arange(h)
+    x, y = torch.meshgrid(x, y)
 
     if flat:
-        x = x.flatten()
-        y = y.flatten()
+        x = torch.flatten(x)
+        y = torch.flatten(y)
 
     return x, y
 
 
 def resize_nearest(image, new_width, new_height):
-    old_height, old_width = image.shape[:2]
+    old_height, old_width, c = image.shape
 
-    x = np.arange(new_width)[np.newaxis, :]
-    y = np.arange(new_height)[:, np.newaxis]
+    x = torch.arange(new_width).unsqueeze(dim=0)
+    y = torch.arange(new_height).unsqueeze(dim=1)
     x = x * old_width / new_width
     y = y * old_height / new_height
-    x = np.clip(x.astype(np.int32), 0, old_width - 1)
-    y = np.clip(y.astype(np.int32), 0, old_height - 1)
+    x = torch.clip(x.to(torch.long), 0, old_width - 1)
+    y = torch.clip(y.to(torch.long), 0, old_height - 1)
 
-    if len(image.shape) == 3:
-        image = image.reshape(-1, image.shape[2])
-    else:
-        image = image.ravel()
+    image = image.reshape(-1, c)
 
-    return image[x + y * old_width]
+    return image[x + y * old_width, :]
 
 
 def estimate_foreground_background(
@@ -63,6 +61,8 @@ def estimate_foreground_background(
         print_info=False,
 ):
     """
+    FIX BATCH = 1, H = W = 480 !!!
+
     Estimate foreground and background of an image using a multilevel
     approach.
     min_size: int > 0
@@ -83,28 +83,23 @@ def estimate_foreground_background(
         Background image.
     """
 
-    assert (min_size >= 1)
-    assert (growth_factor > 1.0)
-    h0, w0 = input_image.shape[:2]
+    assert min_size >= 1
+    assert growth_factor > 1.0
+    b, c, h0, w0 = input_image.shape
+    assert b == 1
+
+    input_image = torch.reshape(input_image, (-1, h0, w0)).permute(1, 2, 0)  # [h, w, 3]
+    input_alpha = torch.reshape(input_alpha, (-1, h0, w0)).permute(1, 2, 0)  # [h, w, 1]
 
     if print_info:
         print("Solving for foreground and background using multilevel method")
 
     # Find initial image size.
-    if w0 < h0:
-        w = min_size
-        # ceil rounding one level faster sometimes
-        h = int(np.ceil(min_size * h0 / w0))
-    else:
-        w = int(np.ceil(min_size * w0 / h0))
-        h = min_size
-
-    if print_info:
-        print("Initial size: %d-by-%d" % (w, h))
+    h = w = min_size
 
     # Generate initial foreground and background from input image
     F = resize_nearest(input_image, w, h)
-    B = F.copy()
+    B = F.clone()
 
     while True:
         if print_info:
@@ -123,13 +118,10 @@ def estimate_foreground_background(
             x, y = pixel_coordinates(w, h, flat=True)
 
             # Make alpha into a vector
-            if len(alpha.shape) == 3:
-                a = alpha[:, :, 0].reshape(w * h)
-            else:
-                a = alpha.reshape(w * h)
+            a = alpha[:, :, 0].reshape(w * h)
 
             # Build system of linear equations
-            U = np.stack([a, 1 - a], axis=1)
+            U = torch.stack([a, 1 - a], dim=1)
             A = vec_vec_outer(U, U)
             b = vec_vec_outer(U, image.reshape(w * h, 3))
 
@@ -142,7 +134,7 @@ def estimate_foreground_background(
                 j = x2 + y2 * w
 
                 # Gradient of alpha
-                da = regularization + np.abs(a - a[j])
+                da = regularization + torch.abs(a - a[j])
 
                 # Update matrix of linear equation system
                 A[:, 0, 0] += da
@@ -153,18 +145,18 @@ def estimate_foreground_background(
                 b[:, 1, :] += da.reshape(w * h, 1) * B.reshape(w * h, 3)[j]
 
             # Solve linear equation system for foreground and background
-            fb = np.clip(np.matmul(inv2(A), b), 0, 1)
+            fb = torch.clip(torch.matmul(inv2(A), b), 0, 1)
 
             F = fb[:, 0, :].reshape(h, w, 3)
             B = fb[:, 1, :].reshape(h, w, 3)
 
         # If original image size is reached, return result
         if w >= w0 and h >= h0:
-            return F, B
+            return F.permute(2, 0, 1).unsqueeze(dim=0), B.permute(2, 0, 1).unsqueeze(dim=0)
 
         # Grow image size to next level
-        w = min(w0, int(np.ceil(w * growth_factor)))
-        h = min(h0, int(np.ceil(h * growth_factor)))
+        w = min(w0, (w * growth_factor))
+        h = min(h0, (h * growth_factor))
 
         F = resize_nearest(F, w, h)
         B = resize_nearest(B, w, h)
