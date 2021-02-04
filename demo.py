@@ -12,9 +12,9 @@ if __name__ == '__main__':
     out_trimap_dir  = 'data/predictions/trimap'
     out_cutout_dir  = 'data/predictions/cutout'
     out_image_dir   = 'data/predictions/image'
-    checkpoint_path = 'checkpoints/end2end-epoch-400-1611364021.pt'
+    checkpoint_path = 'checkpoints/mini.pt'
 
-    bg_color = [33, 150, 243]  # BGR
+    bg_color = [33, 150, 243]  # RGB
 
     os.makedirs(out_comp_dir, exist_ok=True)
     os.makedirs(out_trimap_dir, exist_ok=True)
