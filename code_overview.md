@@ -2,9 +2,21 @@
 
 [TOC]
 
-## 1 使用方法
+## 1 环境
 
-### 1.1 训练模型
+- python ~= 3.8
+- tensorboardX ~= 2.1
+- numpy ~= 1.19.2
+- opencv-python ~= 4.0.1
+- torch ~= 1.7.0
+- torchversion ~= 0.8.1
+- psutil ~= 5.8.0
+- pillow ~= 8.1.0
+
+
+## 2 使用方法
+
+### 2.1 训练模型
 
 训练代码为项目根目录下的 `train.py` 文件，调用方法如下：
 
@@ -48,7 +60,7 @@ optional arguments:
 
 
 
-### 1.2 测试模型
+### 2.2 测试模型
 
 测试代码为项目根目录下的 `test.py` 文件，调用方法如下：
 
@@ -76,11 +88,11 @@ optional arguments:
 
 
 
-### 1.3 使用抠图算法
+### 2.3 使用抠图算法
 
 抠图算法的调用代码写在项目根目录下的 `matting.py` 文件中的 `Matting` 类中，该类的接口如下：
 
-#### 1.3.1 构造方法
+#### 2.3.1 构造方法
 
 1. 参数解释：
 
@@ -94,7 +106,7 @@ optional arguments:
    M = Matting('/path/to/checkpoint', gpu=True)
    ```
 
-#### 1.3.2 抠图方法
+#### 2.3.2 抠图方法
 
 1. 方法：`matting`
 
@@ -142,7 +154,7 @@ optional arguments:
    )
    ```
 
-#### 1.3.3 前景预测方法
+#### 2.3.3 前景预测方法
 
 1. 方法：`cutout`
 
@@ -170,7 +182,7 @@ optional arguments:
    cut = M.cutout(img, matte)
    ```
 
-#### 1.3.4 图像合成方法
+#### 2.3.4 图像合成方法
 
 1. 方法：`composite`
 
@@ -198,7 +210,7 @@ optional arguments:
    comp = M.composite(cutout, bg_color)
    ```
 
-#### 1.3.5 抠图流程使用样例
+#### 2.3.5 抠图流程使用样例
 
 ```
 M = Matting(checkpoint_path, gpu=True)
@@ -211,7 +223,7 @@ comp = M.composite(cut, bg_color)
 
 
 
-## 2 程序结构
+## 3 程序结构
 
 - comp
   - estimate_fb.py：合成步骤中使用到的前景背景预测算法
