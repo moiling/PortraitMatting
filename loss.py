@@ -34,10 +34,13 @@ def matting_loss(img, pred_trimap_prob, pred_matte, pred_matte_u, pred_fg_u, gt_
 
     if mode == 't-net':
         return class_loss(pred_trimap_prob, gt_trimap_3)
-    if mode == 'm-net' or mode == 'f-net':
+    if mode == 'm-net':
         return (0.5 * alpha_loss(pred_matte_u, gt_matte, mask) +
                 0.5 * comp_loss(img, pred_matte_u, gt_fg, gt_bg, mask) +
                 0.5 * alpha_loss(pred_fg_u, gt_fg, mask))
+    if mode == 'f-net':
+        return (0.5 * alpha_loss(pred_matte, gt_matte) +
+                0.5 * comp_loss(img, pred_matte, gt_fg, gt_bg))
 
     mask = (pred_trimap_prob.softmax(dim=1).argmax(dim=1) == 1).float().unsqueeze(dim=1)
     mask = mask.detach()
