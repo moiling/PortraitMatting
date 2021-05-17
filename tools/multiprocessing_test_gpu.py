@@ -11,7 +11,7 @@ import pynvml
 from matting import Matting
 
 gpu = True
-model = Matting(checkpoint_path='../checkpoints/best.pt', gpu=gpu)
+model = Matting(checkpoint_path='../checkpoints_old/best.pt', gpu=gpu)
 model.model.share_memory()
 # print('load model')
 max_mem_used = 0
@@ -23,7 +23,7 @@ def multi_matting(img_dir, out_comp_dir, bg_color, name):
     # print(f'start: {name}')
     img_path = os.path.join(img_dir, name)
 
-    matte, img, trimap = model.matting(img_path, with_img_trimap=True, net_img_size=480, max_size=378)
+    matte, img, trimap = model.matting(img_path, return_img_trimap=True, net_img_size=480, max_size=378)
     cut = model.cutout(img, matte)
     comp = model.composite(cut, np.array(bg_color) / 255.)
 

@@ -87,6 +87,7 @@ class TrainDataset(BaseDataset):
     def __init__(self, args):
         self.mode = args.mode
         self.patch_size = args.patch_size
+        self.hr = args.hr
         super().__init__(
             img_dir=args.img,
             trimap_dir=args.trimap,
@@ -119,25 +120,23 @@ class TrainDataset(BaseDataset):
                 transforms.ToTensor()
             ])
 
-        if self.mode == 'm-net':
-            return transforms.Compose([
-                # transforms.RandomCrop([240, 360, 480, 640]),
-                transforms.Resize((self.patch_size, self.patch_size)),
-                transforms.RandomCrop([int(self.patch_size * 3 / 4), self.patch_size]),
-                transforms.Resize((self.patch_size, self.patch_size)),
-                transforms.RandomHorizontalFlip(),
-                transforms.ToTensor()
-            ])
-
-        if self.mode == 'f-net':
-            return transforms.Compose([
-                # transforms.RandomCrop([480, 640]),
-                transforms.Resize((self.patch_size, self.patch_size)),
-                transforms.RandomCrop([int(self.patch_size * 3 / 4), self.patch_size]),
-                transforms.Resize((self.patch_size, self.patch_size)),
-                transforms.RandomHorizontalFlip(),
-                transforms.ToTensor()
-            ])
+        if self.mode == 'm-net' or self.mode == 'f-net':
+            if self.hr:
+                return transforms.Compose([
+                    transforms.RandomCrop([240, 360, 480, 640, 960, 1280]),
+                    transforms.Resize((self.patch_size, self.patch_size)),
+                    transforms.RandomHorizontalFlip(),
+                    transforms.ToTensor()
+                ])
+            else:
+                return transforms.Compose([
+                    # transforms.RandomCrop([240, 360, 480, 640]),
+                    transforms.Resize((self.patch_size, self.patch_size)),
+                    transforms.RandomCrop([int(self.patch_size * 3 / 4), self.patch_size]),
+                    transforms.Resize((self.patch_size, self.patch_size)),
+                    transforms.RandomHorizontalFlip(),
+                    transforms.ToTensor()
+                ])
 
 
 class ValDataset(BaseDataset):
@@ -149,11 +148,14 @@ class ValDataset(BaseDataset):
             trimap_dir=args.val_trimap,
             matte_dir=args.val_matte,
             trans=self.__create_transforms(),
-            random_trimap=args.random_trimap
+            random_trimap=args.random_trimap,
+            fg_dir=args.val_fg,
+            bg_dir=args.val_bg
         )
 
     def __create_transforms(self):
         return transforms.Compose([
+            transforms.ResizeIfBiggerThan(self.patch_size),
             # transforms.Resize((self.patch_size, self.patch_size)),
             transforms.ToTensor()
         ])

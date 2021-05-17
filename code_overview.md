@@ -147,7 +147,7 @@ optional arguments:
    ```python
    matte, img, trimap = M.matting(
        '/path/to/image', 
-       with_img_trimap=True, 
+       return_img_trimap=True, 
        net_img_size=480, 
        max_size=-1, 
        trimap_path='/path/to/trimap'

@@ -8,7 +8,7 @@ from networks.ops import SEBlock, Conv2dIBNormRelu
 
 class MobileNetWrapper(nn.Module):
 
-    def __init__(self, pretrain=True):
+    def __init__(self, pretrain=False):
         super().__init__()
         self.model = MobileNetV2(in_channels=3, pretrain=pretrain)
         enc_channels = [16, 24, 32, 96, 1280]

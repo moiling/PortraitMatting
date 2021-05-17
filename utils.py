@@ -82,15 +82,17 @@ def load_checkpoint(checkpoint_dir, mode, logger=logging.getLogger('utils')):
     return None
 
 
-def save_images(out_dir, names, pred_mattes, pred_trimaps_prob, pred_mattes_u, logger=logging.getLogger('utils')):
+def save_images(out_dir, names, pred_mattes, pred_trimaps_softmax, pred_mattes_u, pred_fg_u, logger=logging.getLogger('utils')):
     """Save a batch of images."""
     matte_path = os.path.join(out_dir, 'matte')
     matte_u_path = os.path.join(out_dir, 'matte_u')
     trimap_path = os.path.join(out_dir, 'trimap')
+    fg_u_path = os.path.join(out_dir, 'fg_u')
 
     os.makedirs(matte_path, exist_ok=True)
     os.makedirs(matte_u_path, exist_ok=True)
     os.makedirs(trimap_path, exist_ok=True)
+    os.makedirs(fg_u_path, exist_ok=True)
 
     # logger.debug(f'Saving {len(names)} images to {out_dir}')
 
@@ -103,9 +105,12 @@ def save_images(out_dir, names, pred_mattes, pred_trimaps_prob, pred_mattes_u, l
         save_path = os.path.join(matte_u_path, name)
         torchvision.utils.save_image(matte_u, save_path)
 
-        trimap = pred_trimaps_prob[idx]
-        trimap = trimap.softmax(dim=0)
+        trimap = pred_trimaps_softmax[idx]
         trimap = trimap.argmax(dim=0)
         trimap = trimap / 2.
         save_path = os.path.join(trimap_path, name)
         torchvision.utils.save_image(trimap, save_path)
+
+        fg_u = pred_fg_u[idx]
+        save_path = os.path.join(fg_u_path, name)
+        torchvision.utils.save_image(fg_u, save_path)

@@ -108,6 +108,7 @@ venv.bak/
 *.ckpt
 /data/
 /saved_ckpt/
-/checkpoints/
+/checkpoints_old/
 /runs/
 /tools/out/
+/checkpoints/

@@ -1,8 +1,8 @@
 import torch
 
 if __name__ == '__main__':
-    old_ckpt = '../checkpoints/end2end-best-epoch-115-1611190391.pt'
-    new_ckpt = '../checkpoints/mini.pt'
+    old_ckpt = '../checkpoints_old/modnet.pt'
+    new_ckpt = '../checkpoints_old/modnet_mini.pt'
 
     ckpt = torch.load(old_ckpt)
     ckpt_new = {'model_state_dict': ckpt['model_state_dict']}

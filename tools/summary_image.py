@@ -4,21 +4,21 @@ import cv2
 from functools import reduce
 
 if __name__ == '__main__':
-    orig_img_type = 'all_photos'
+    orig_img_type = 'photos2'
     orig_img_path = os.path.join('D:/Mission', orig_img_type)
-    result_img_path = 'C:/Users/moi/Desktop/comp'
-    result_img_path_2 = 'C:/Users/moi/Desktop/comp2'
+    result_img_path = 'C:/Users/moi/Desktop/test_fine_before'
+    result_img_path_2 = 'C:/Users/moi/Desktop/test_fine_after'
     summary_out_path = './out'
     fix_img_height = 378
     avg_img_width = 260
     padding_middle = 24
-    max_img_inline = 22
+    max_img_inline = 8
     summary_bg_color = [255, 255, 255]
 
     summary_img_inlines = []
 
     # img names
-    img_names = os.listdir(orig_img_path)
+    img_names = os.listdir(result_img_path)
     # img_names_png = list(map(lambda name: name.replace('jpg', 'png'), img_names))
 
     total_num = len(img_names)
@@ -37,11 +37,11 @@ if __name__ == '__main__':
                 cur_img_idx = i
                 break
 
-            orig_img = cv2.imread(os.path.join(orig_img_path, img_names[i]))
-            result_img = cv2.imread(os.path.join(result_img_path, img_names[i]).replace('.jpg', '.png'))
+            orig_img = cv2.imread(os.path.join(orig_img_path, img_names[i]).replace('_b.png', '.jpg'))
+            result_img = cv2.imread(os.path.join(result_img_path, img_names[i]))
 
             if result_img_path_2 != '':
-                result_img_2 = cv2.imread(os.path.join(result_img_path_2, img_names[i]).replace('.jpg', '.png'))
+                result_img_2 = cv2.imread(os.path.join(result_img_path_2, img_names[i]).replace('_b.png', '.png'))
 
             oh, ow, _ = orig_img.shape
             rh, rw, _ = result_img.shape

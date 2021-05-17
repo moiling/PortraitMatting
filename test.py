@@ -19,7 +19,7 @@ parser.add_argument('--img',        type=str,   default='',   help='training ima
 parser.add_argument('--trimap',     type=str,   default='',   help='intermediate trimaps.')
 parser.add_argument('--matte',      type=str,   default='',   help='final mattes.')
 parser.add_argument('--out',        type=str,   default='',   help='val image out.')
-parser.add_argument('--ckpt',       type=str,   default='',   help='checkpoints.')
+parser.add_argument('--ckpt',       type=str,   default='',   help='checkpoints_old.')
 parser.add_argument('--batch',      type=int,   default=1,    help='input batch size for train')
 parser.add_argument('--patch-size', type=int,   default=480,  help='patch size of input images.')
 parser.add_argument('--seed',       type=int,   default=42,   help='random seed.')

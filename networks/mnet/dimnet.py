@@ -85,7 +85,7 @@ class SegNetUp1(nn.Module):
 
 
 class DIMNet(nn.Module):
-    def __init__(self, n_classes=1, in_channels=6, is_unpooling=True, pretrain=True):
+    def __init__(self, n_classes=4, in_channels=6, is_unpooling=True, pretrain=False):
         super().__init__()
 
         self.in_channels = in_channels
